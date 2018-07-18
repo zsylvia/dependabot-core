@@ -994,6 +994,40 @@ RSpec.describe Dependabot::FileUpdaters::JavaScript::NpmAndYarn do
           expect(updated_files.count).to eq(2)
         end
       end
+
+      context "with a platform-specific requirement (that isn't met)" do
+        let(:manifest_fixture_name) { "platform_requirement.json" }
+        let(:npm_lock_fixture_name) { "platform_requirement.json" }
+        let(:dependency) do
+          Dependabot::Dependency.new(
+            name: "fsevents",
+            version: "1.2.4",
+            previous_version: "1.2.3",
+            package_manager: "npm_and_yarn",
+            requirements: [{
+              file: "package.json",
+              requirement: "*",
+              groups: [],
+              source: nil
+            }],
+            previous_requirements: [{
+              file: "package.json",
+              requirement: "*",
+              groups: [],
+              source: nil
+            }]
+          )
+        end
+
+        it "updates the packages" do
+          puts package_lock.content
+          puts "======="
+          puts updated_npm_lock.content
+          parsed_lockfile = JSON.parse(updated_npm_lock.content)
+          expect(parsed_lockfile["dependencies"]["fsevents"]["version"]).
+            to eq("1.2.4")
+        end
+      end
     end
 
     #######################
