@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+install_dir=$1
+if [ -z "$install_dir" ]; then
+  echo "usage: $0 INSTALL_DIR"
+  exit 1
+fi
+
+source "$install_dir/env"
+
+engine_dir="$(dirname "${BASH_SOURCE[0]}")"
+
+PYENV_VERSION=2.7.15 pyenv exec pip install -r "${engine_dir}/requirements.txt"
+PYENV_VERSION=3.6.7 pyenv exec pip install -r "${engine_dir}/requirements.txt"

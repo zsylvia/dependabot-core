@@ -1,6 +1,9 @@
 /.bundle
 /.git
 /tmp/
-/helpers
+/helpers/npm/node_modules
+/helpers/yarn/node_modules
+/helpers/php/vendor
+/helpers/go/go-helpers.*64
 /spec
 gitignored

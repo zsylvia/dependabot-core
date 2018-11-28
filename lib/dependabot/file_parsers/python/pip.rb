@@ -125,7 +125,7 @@ module Dependabot
             write_temporary_dependency_files
 
             requirements = SharedHelpers.run_helper_subprocess(
-              command: "pyenv exec python #{python_helper_path}",
+              command: "#{pyenv_path} exec python #{python_helper_path}",
               function: "parse_requirements",
               args: [Dir.pwd]
             )
@@ -163,6 +163,12 @@ module Dependabot
         def python_helper_path
           project_root = File.join(File.dirname(__FILE__), "../../../..")
           File.join(project_root, "helpers/python/run.py")
+        end
+
+        def pyenv_path
+          return "pyenv" unless ENV["PYENV_ROOT"]
+
+          File.join(ENV["PYENV_ROOT"], "bin", "pyenv")
         end
 
         # See https://www.python.org/dev/peps/pep-0503/#normalized-names
