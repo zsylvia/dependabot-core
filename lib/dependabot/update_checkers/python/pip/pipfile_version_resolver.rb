@@ -20,7 +20,7 @@ module Dependabot
         # is somewhat crude:
         # - Unlock the dependency we're checking in the Pipfile
         # - Freeze all of the other dependencies in the Pipfile
-        # - Run `pipenv lock` and see what the result is
+        # - Run `pipenv install` and see what the result is
         #
         # Unfortunately, Pipenv doesn't resolve how we'd expect - it appears to
         # just raise if the latest version can't be resolved. Knowing that is
@@ -72,11 +72,13 @@ module Dependabot
                   write_temporary_dependency_files
 
                   # Shell out to Pipenv, which handles everything for us.
-                  # Whilst calling `lock` avoids doing an install as part of the
-                  # pipenv flow, an install is still done by pip-tools in order
-                  # to resolve the dependencies. That means this is slow.
+                  # We use `install` rather than `lock` as in some cases we
+                  # need dependencies to be installed for resolution to succeed
+                  # (e.g. checking for the presence of cython in a setup.py).
+                  # Running `install` also doesn't actually appear to be much
+                  # (if at all) slower than `lock`.
                   run_pipenv_command(
-                    pipenv_environment_variables + "pyenv exec pipenv lock"
+                    pipenv_environment_variables + "pyenv exec pipenv install"
                   )
 
                   updated_lockfile = JSON.parse(File.read("Pipfile.lock"))
@@ -184,7 +186,7 @@ module Dependabot
                 write_temporary_dependency_files(update_pipfile: false)
 
                 run_pipenv_command(
-                  pipenv_environment_variables + "pyenv exec pipenv lock"
+                  pipenv_environment_variables + "pyenv exec pipenv install"
                 )
 
                 true
