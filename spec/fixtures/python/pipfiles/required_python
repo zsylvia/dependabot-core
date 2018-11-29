@@ -3,7 +3,7 @@ url = "https://pypi.python.org/simple"
 verify_ssl = true
 
 [requires]
-python_version = "2.7"
+python_full_version = "2.7.15"
 
 [dev-packages]
 pytest = "==3.4.0"
