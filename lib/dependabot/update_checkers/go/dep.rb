@@ -177,6 +177,9 @@ module Dependabot
                 credentials: credentials
               ).latest_resolvable_version
             end
+        rescue SharedHelpers::HelperSubprocessFailed => error
+          # This should rescue resolvability errors in future
+          raise unless error.message.include?("Solving failure")
         end
 
         def latest_git_tag_is_resolvable?
