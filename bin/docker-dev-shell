@@ -101,10 +101,7 @@ docker run --rm -ti \
   -v "$(pwd)/dep/dependabot-dep.gemspec:$CODE_DIR/dep/dependabot-dep.gemspec" \
   -v "$(pwd)/dep/lib:$CODE_DIR/dep/lib" \
   -v "$(pwd)/dep/spec:$CODE_DIR/dep/spec" \
-  -v "$(pwd)/go_modules/Gemfile:$CODE_DIR/go_modules/Gemfile" \
-  -v "$(pwd)/go_modules/dependabot-go_modules.gemspec:$CODE_DIR/go_modules/dependabot-go_modules.gemspec" \
-  -v "$(pwd)/go_modules/lib:$CODE_DIR/go_modules/lib" \
-  -v "$(pwd)/go_modules/spec:$CODE_DIR/go_modules/spec" \
+  -v "$(pwd)/go_modules:$CODE_DIR/go_modules" \
   -v "$(pwd)/npm_and_yarn/Gemfile:$CODE_DIR/npm_and_yarn/Gemfile" \
   -v "$(pwd)/npm_and_yarn/dependabot-npm_and_yarn.gemspec:$CODE_DIR/npm_and_yarn/dependabot-npm_and_yarn.gemspec" \
   -v "$(pwd)/npm_and_yarn/lib:$CODE_DIR/npm_and_yarn/lib" \

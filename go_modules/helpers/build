@@ -2,25 +2,22 @@
 
 set -e
 
-install_dir=$1
-if [ -z "$install_dir" ]; then
-  echo "usage: $0 INSTALL_DIR"
+install_root="$DEPENDABOT_NATIVE_HELPERS_PATH"
+if [ -n "$install_root" ] && ! [[ "$install_root" =~ ^/ ]]; then
+  echo "DEPENDABOT_NATIVE_HELPERS_PATH must be an absolute path"
   exit 1
-fi
-
-if ! [[ "$install_dir" =~ ^/ ]]; then
-  echo "$install_dir must be an absolute path"
-  exit 1
-fi
-
-if [ ! -d "$install_dir/bin" ]; then
-  mkdir -p "$install_dir/bin"
 fi
 
 helpers_dir="$(dirname "${BASH_SOURCE[0]}")"
 cd $helpers_dir
 
-os="$(uname -s | tr '[:upper:]' '[:lower:]')"
-echo "building $install_dir/bin/helper"
+install_dir="${install_root:-$(pwd)/../../tmp/helpers}/go_modules"
 
-GO111MODULE=on GOOS="$os" GOARCH=amd64 go build -o "$install_dir/bin/helper" .
+echo "> installing go_modules helpers to $install_dir"
+
+os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+
+echo "> building $install_dir/helper"
+GO111MODULE=on GOOS="$os" GOARCH=amd64 go build -o "$install_dir/helper" .
+
+echo "> done"
