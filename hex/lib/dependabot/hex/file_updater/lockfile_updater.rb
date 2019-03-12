@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "shellwords"
 require "dependabot/hex/file_updater"
 require "dependabot/hex/file_updater/mixfile_updater"
 require "dependabot/hex/file_updater/mixfile_sanitizer"
@@ -27,7 +28,7 @@ module Dependabot
               SharedHelpers.with_git_configured(credentials: credentials) do
                 SharedHelpers.run_helper_subprocess(
                   env: mix_env,
-                  command: "mix run #{elixir_helper_path}",
+                  command: Shellwords.join(["mix", "run", elixir_helper_path]),
                   function: "get_updated_lockfile",
                   args: [Dir.pwd, dependency.name, organization_credentials]
                 )

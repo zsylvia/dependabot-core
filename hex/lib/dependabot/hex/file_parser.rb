@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "shellwords"
 require "dependabot/dependency"
 require "dependabot/file_parsers"
 require "dependabot/file_parsers/base"
@@ -47,7 +48,7 @@ module Dependabot
 
           SharedHelpers.run_helper_subprocess(
             env: mix_env,
-            command: "mix run #{elixir_helper_path}",
+            command: Shellwords.join(["mix", "run", elixir_helper_path]),
             function: "parse",
             args: [Dir.pwd],
             stderr_to_stdout: true
