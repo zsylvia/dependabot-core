@@ -6,6 +6,7 @@ require "dependabot/monkey_patches/bundler/git_source_patch"
 
 require "excon"
 
+require "dependabot/bundler"
 require "dependabot/bundler/update_checker"
 require "dependabot/shared_helpers"
 require "dependabot/errors"
@@ -38,6 +39,8 @@ module Dependabot
         def in_a_temporary_bundler_context(error_handling: true)
           base_directory = dependency_files.first.directory
           SharedHelpers.in_a_temporary_directory(base_directory) do |tmp_dir|
+            Bundler.project_root = tmp_dir.to_s.delete_suffix(base_directory)
+
             write_temporary_dependency_files
 
             SharedHelpers.in_a_forked_process do

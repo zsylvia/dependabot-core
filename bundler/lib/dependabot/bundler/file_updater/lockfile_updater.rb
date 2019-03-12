@@ -69,6 +69,7 @@ module Dependabot
           base_dir = dependency_files.first.directory
           lockfile_body =
             SharedHelpers.in_a_temporary_directory(base_dir) do |tmp_dir|
+              Bundler.project_root = tmp_dir.to_s.delete_suffix(base_dir)
               write_temporary_dependency_files
 
               SharedHelpers.in_a_forked_process do
