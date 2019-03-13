@@ -2,6 +2,7 @@
 
 require "toml-rb"
 require "open3"
+require "shellwords"
 require "dependabot/python/requirement_parser"
 require "dependabot/python/file_updater"
 require "dependabot/shared_helpers"
@@ -259,8 +260,8 @@ module Dependabot
         end
 
         def run_pipenv_command(command)
-          local_command = "pyenv local #{python_version} && " + command
-          run_command(local_command)
+          set_py_version = Shellwords.join(["pyenv", "local", python_version])
+          run_command("#{set_py_version} && #{command}")
         rescue SharedHelpers::HelperSubprocessFailed => error
           original_error ||= error
           msg = error.message
@@ -274,7 +275,8 @@ module Dependabot
           raise relevant_error if python_version.start_with?("2")
 
           # Clear the existing virtualenv, so that we use the new Python version
-          run_command("pyenv local #{python_version} && pyenv exec pipenv --rm")
+          set_py_version = Shellwords.join(["pyenv", "local", python_version])
+          run_command("#{set_py_version} && pyenv exec pipenv --rm")
 
           @python_version = "2.7.15"
           retry
