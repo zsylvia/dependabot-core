@@ -145,9 +145,6 @@ module Dependabot
           end
         end
 
-        # Duplicated in NpmLockfileUpdater
-        # Remove the dependency we want to update from the lockfile and let
-        # yarn find the latest resolvable version and fix the lockfile
         def prepared_yarn_lockfile_content(content)
           content.gsub(/^#{Regexp.quote(dependency.name)}\@.*?\n\n/m, "")
         end
@@ -158,9 +155,6 @@ module Dependabot
           )
         end
 
-        # Duplicated in NpmLockfileUpdater
-        # Remove the dependency we want to update from the lockfile and let
-        # npm find the latest resolvable version and fix the lockfile
         def remove_dependency_from_npm_lockfile(npm_lockfile)
           return npm_lockfile unless npm_lockfile.key?("dependencies")
 

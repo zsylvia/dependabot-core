@@ -1271,10 +1271,8 @@ RSpec.describe Dependabot::NpmAndYarn::FileUpdater do
           expect(package3_yarn_lock.content).
             to include("mime@^2.0.3:\n  version \"2.3.1\"")
 
-          # TODO: Change this to 2.3.1 once npm supports updating to specific
-          # sub dependency versions
           expect(parsed_package1_npm_lock["dependencies"]["mime"]["version"]).
-            to eq("2.4.0")
+            to eq("2.3.1")
         end
       end
 
@@ -1329,20 +1327,35 @@ RSpec.describe Dependabot::NpmAndYarn::FileUpdater do
     end
 
     context "when updating a sub dependency with multiple requirements" do
-      let(:manifest_fixture_name) { "multiple_sub_dependencies.json" }
-      let(:yarn_lock_fixture_name) { "multiple_sub_dependencies.lock" }
-
       let(:dependency_name) { "js-yaml" }
       let(:version) { "3.12.0" }
       let(:previous_version) { "3.9.0" }
       let(:requirements) { [] }
       let(:previous_requirements) { nil }
 
-      it "de-duplicates all entries to the same version" do
-        expect(updated_files.map(&:name)).to match_array(["yarn.lock"])
-        expect(updated_yarn_lock.content).
-          to include("js-yaml@^3.10.0, js-yaml@^3.4.6, js-yaml@^3.9.0:\n"\
-                     "  version \"3.12.0\"")
+      context "when yarn" do
+        let(:manifest_fixture_name) { "multiple_sub_dependencies.json" }
+        let(:yarn_lock_fixture_name) { "multiple_sub_dependencies.lock" }
+
+        it "de-duplicates all entries to the same version" do
+          expect(updated_files.map(&:name)).to match_array(["yarn.lock"])
+          expect(updated_yarn_lock.content).
+            to include("js-yaml@^3.10.0, js-yaml@^3.4.6, js-yaml@^3.9.0:\n"\
+                       "  version \"3.12.0\"")
+        end
+      end
+
+      context "when npm" do
+        let(:manifest_fixture_name) { "multiple_sub_dependencies.json" }
+        let(:npm_lock_fixture_name) { "multiple_sub_dependencies.json" }
+
+        it "de-duplicates all entries to the same version" do
+          expect(updated_files.map(&:name)).
+            to match_array(["package-lock.json"])
+          parsed_npm_lock = JSON.parse(updated_npm_lock.content)
+          expect(parsed_npm_lock["dependencies"]["js-yaml"]["version"]).
+            to eq("3.12.0")
+        end
       end
     end
 
